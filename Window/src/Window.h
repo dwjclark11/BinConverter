@@ -11,10 +11,12 @@ namespace WINDOWING {
 		std::string m_sTitle;
 		int m_Width, m_Height, m_CurrentWidth, m_CurrentHeight;
 		Uint32 m_WindowFlags;
-		void CreateNewWindow(Uint32 flags);
+		void CreateNewWindow(int xPos, int yPos, Uint32 flags);
 
 	public:
-		Window(const std::string& title, int width, int height, bool v_sync = true, Uint32 flags = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MOUSE_CAPTURE | SDL_WINDOW_MAXIMIZED));
+		Window(const std::string& title, int width, int height, 
+			int xPos = SDL_WINDOWPOS_CENTERED, int yPos = SDL_WINDOWPOS_CENTERED, bool v_sync = true,
+			Uint32 flags = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MOUSE_CAPTURE | SDL_WINDOW_MAXIMIZED));
 		~Window();
 
 		void SetGLContext(SDL_GLContext gl_context) { m_GLContext = gl_context; }

@@ -1,7 +1,16 @@
 #pragma once
 #include <Window.h>
+#include "ImGuiUtils.hpp"
+#include "displays/IDisplay.hpp"
+#include <map>
 
 namespace BinConverter {
+
+	enum class DisplayType
+	{
+		UPLOAD, // TODO: Add more display types
+	};
+
 	class Application
 	{
 	public:
@@ -10,6 +19,8 @@ namespace BinConverter {
 
 	private:
 		std::unique_ptr<WINDOWING::Window> m_pWindow{ nullptr };
+		std::unique_ptr<ImGuiUtils::ImguiExt> m_pImGuiEx{ nullptr };
+		std::map<DisplayType, std::unique_ptr<IDisplay>> m_mapDisplays;
 
 		SDL_Event m_Event{};
 		bool m_bIsRunning{ true };
@@ -17,6 +28,7 @@ namespace BinConverter {
 
 	private:
 		bool Initialize();
+		bool InitDisplays();
 		void ProcessEvents();
 		void Update();
 		void Render();

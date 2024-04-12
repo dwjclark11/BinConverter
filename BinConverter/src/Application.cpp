@@ -1,10 +1,12 @@
 #include "Application.hpp"
-
+#include <Logger.h>
+#include <glad/glad.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_opengl3.h>
-#include <glad/glad.h>
 #include <SDL_opengl.h>
-#include <Logger.h>
+
+// Displays 
+#include "displays/UploadDisplay.hpp"
 
 namespace BinConverter {
 
@@ -31,6 +33,12 @@ namespace BinConverter {
 
 	bool BinConverter::Application::Initialize()
 	{
+#ifdef NDEBUG
+		LOG_INIT(false, true);
+#else
+		LOG_INIT(true, true);
+#endif
+
 		// Init SDL
 		if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 		{
@@ -62,7 +70,13 @@ namespace BinConverter {
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 		// Create the Window
-		m_pWindow = std::make_unique<WINDOWING::Window>("SCION-2D Editor", m_WindowWidth, m_WindowHeight);
+		m_pWindow = std::make_unique<WINDOWING::Window>(
+			"BIN CONVERTER", 
+			m_WindowWidth, m_WindowHeight, 
+			SDL_WINDOWPOS_CENTERED,	
+			SDL_WINDOWPOS_CENTERED,	
+			true, SDL_WINDOW_OPENGL
+		);
 
 		// Create the OpenGL Context
 		m_pWindow->SetGLContext(SDL_GL_CreateContext(m_pWindow->GetWindow().get()));
@@ -84,53 +98,26 @@ namespace BinConverter {
 			return false;
 		}
 
-		// Initialize Imgui
-		const char* glsl_version = "#version 450";
-		IMGUI_CHECKVERSION();
-
-		if (!ImGui::CreateContext())
+		// Initialize ImGui 
+		m_pImGuiEx = std::make_unique<ImGuiUtils::ImguiExt>();
+		if (!m_pImGuiEx->Initialize(*m_pWindow))
 		{
-			ERROR("Failed to create imgui context!");
+			ERROR("Failed to Initialize ImGui and Extensions!");
 			return false;
 		}
 
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		
-
-		// Config fonts
-		// auto fontAtlas = io.Fonts;
-		//ImFontConfig config;
-		//config.GlyphRanges = fontAtlas->GetGlyphRangesDefault();
-		//io.Fonts->AddFontFromFileTTF("./assets/fonts/segoeui.ttf", 18.f, &config, config.GlyphRanges);
-
-		//config.MergeMode = true;
-		////config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
-		//static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-		//auto font = io.Fonts->AddFontFromFileTTF(FONT_ICON_FILE_NAME_FAS, 16.0f, &config, icon_ranges);
-		//font->FallbackChar = '#';
-
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		// Only want the windows to be moved by the titlebar
-		io.ConfigWindowsMoveFromTitleBarOnly = true;
-
-		// Setup Platform/Renderer backends
-		if (!ImGui_ImplSDL2_InitForOpenGL(
-			m_pWindow->GetWindow().get(),
-			m_pWindow->GetGLContext()
-		))
+		if (!InitDisplays())
 		{
-			ERROR("Failed to initialize ImGui_SDL2_For_OpenGL!");
+			ERROR("Failed to initialize Displays!");
 			return false;
 		}
+	}
 
-		if (!ImGui_ImplOpenGL3_Init(glsl_version))
-		{
-			ERROR("Failed to initialize ImGui_OpenGL3!");
-			return false;
-		}
+	bool Application::InitDisplays()
+	{
+		m_mapDisplays.emplace(DisplayType::UPLOAD, std::make_unique<UploadDisplay>());
 
+		return true;
 	}
 
 	void BinConverter::Application::ProcessEvents()
@@ -163,7 +150,7 @@ namespace BinConverter {
 
 				break;
 			case SDL_DROPFILE:
-				
+				m_pImGuiEx->DropFile(std::string{ m_Event.drop.file });
 				break;
 	
 			default:
@@ -183,33 +170,18 @@ namespace BinConverter {
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// ==============================================================================
-		// Start the Dear ImGui frame
-		// ==============================================================================
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame();
-		ImGui::NewFrame();
-		// ==============================================================================
+		m_pImGuiEx->Begin();
+		m_pImGuiEx->Render();
 
-		ImGui::ShowDemoWindow();
-
-		// ==============================================================================
-		// END IMGUI
-		// ==============================================================================
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		for (const auto& [eType, pDisplay] : m_mapDisplays)
 		{
-			SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			SDL_GL_MakeCurrent(
-				m_pWindow->GetWindow().get(),
-				backup_current_context);
+			pDisplay->Draw();
 		}
-		// ==============================================================================
+
+		m_pImGuiEx->End(*m_pWindow);
+		
+		//ImGui::ShowDemoWindow();
+
 		SDL_GL_SwapWindow(m_pWindow->GetWindow().get());
 	}
 

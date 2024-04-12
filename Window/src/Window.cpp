@@ -2,12 +2,12 @@
 #include <Logger.h>
 
 namespace WINDOWING {
-	void Window::CreateNewWindow(Uint32 flags)
+	void Window::CreateNewWindow(int xPos, int yPos, Uint32 flags)
 	{
 		m_pWindow = WindowPtr(SDL_CreateWindow(
 			m_sTitle.c_str(),
-			0,
-			0,
+			xPos,
+			yPos,
 			m_Width,
 			m_Height,
 			flags
@@ -21,12 +21,12 @@ namespace WINDOWING {
 		}
 	}
 
-	Window::Window(const std::string& title, int width, int height, bool v_sync, Uint32 flags)
+	Window::Window(const std::string& title, int width, int height, int xPos, int yPos, bool v_sync, Uint32 flags)
 		: m_pWindow{ nullptr }, m_GLContext{}, m_sTitle{ title }
 		, m_Width{ width }, m_Height{ height }, m_CurrentWidth{ width }, m_CurrentHeight{ height }
 		, m_WindowFlags{ flags }
 	{
-		CreateNewWindow(flags);
+		CreateNewWindow(xPos, yPos, flags);
 
 		// Enable VSync
 		if (v_sync)
