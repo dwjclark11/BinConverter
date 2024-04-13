@@ -3,7 +3,7 @@
 #include <nfd.hpp>
 #include <Logger.h>
 
-#include "../TableGenerator.hpp"
+#include "../utilities/TableGenerator.hpp"
 #include "../Settings.hpp"
 
 BinConverter::UploadDisplay::UploadDisplay(Settings& settings)
@@ -14,7 +14,8 @@ BinConverter::UploadDisplay::UploadDisplay(Settings& settings)
 
 void BinConverter::UploadDisplay::Draw()
 {
-	if (!ImGui::Begin("Content Display"))
+	ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+	if (!ImGui::Begin("Content Display", nullptr, flags))
 	{
 		ImGui::End();
 		return;
@@ -95,12 +96,28 @@ void BinConverter::UploadDisplay::Draw()
 				if (!tableGen.GenerateArray(m_Settings.sTableName, m_Settings.bZeroTerminated,
 					m_Settings.bTableSize, false, m_Settings.bTableEnd))
 				{
-					ERROR("Failed to Generate Array!");
+					ERROR("Failed to Generate C-Style Array [{}] from [{}] to [{}]!",
+						m_Settings.sTableName, m_sUploadedFile, m_sOutFile);
+				}
+				else
+				{
+					LOG("Successfully Generated C-Style Array [{}] from [{}] to [{}]!",
+						m_Settings.sTableName, m_sUploadedFile, m_sOutFile);
 				}
 			}
 			else if (m_Settings.bCreateLuaTable)
 			{
-				// TODO: 
+				if (!tableGen.GenerateLuaTable(m_Settings.sTableName, m_Settings.bZeroTerminated,
+					m_Settings.bTableSize, false, m_Settings.bTableEnd))
+				{
+					ERROR("Failed to Generate Lua Table [{}] from [{}] to [{}]!",
+						m_Settings.sTableName, m_sUploadedFile, m_sOutFile);
+				}
+				else
+				{
+					LOG("Successfully Generated Lua Table [{}] from [{}] to [{}]!",
+						m_Settings.sTableName, m_sUploadedFile, m_sOutFile);
+				}
 			}
 		}
 	}

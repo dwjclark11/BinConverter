@@ -10,7 +10,8 @@ namespace BinConverter {
 
 	void ChoicesDisplay::Draw()
 	{
-		if (!ImGui::Begin("Choices Display"))
+		ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
+		if (!ImGui::Begin("Choices Display", nullptr, flags))
 		{
 			ImGui::End();
 			return;

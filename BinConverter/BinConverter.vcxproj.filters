@@ -21,13 +21,13 @@
     <ClCompile Include="src\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImGuiUtils.cpp">
+    <ClCompile Include="src\utilities\ImGuiUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\displays\UploadDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TableGenerator.cpp">
+    <ClCompile Include="src\utilities\TableGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\displays\ChoicesDisplay.cpp">
@@ -36,12 +36,15 @@
     <ClCompile Include="src\displays\LogDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\utilities\LuaTableWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImGuiUtils.hpp">
+    <ClInclude Include="src\utilities\ImGuiUtils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\displays\UploadDisplay.hpp">
@@ -50,7 +53,7 @@
     <ClInclude Include="src\displays\IDisplay.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\TableGenerator.hpp">
+    <ClInclude Include="src\utilities\TableGenerator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\displays\ChoicesDisplay.hpp">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utilities\LuaTableWriter.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

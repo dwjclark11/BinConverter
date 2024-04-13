@@ -145,9 +145,10 @@
     <ClCompile Include="src\displays\ChoicesDisplay.cpp" />
     <ClCompile Include="src\displays\LogDisplay.cpp" />
     <ClCompile Include="src\displays\UploadDisplay.cpp" />
-    <ClCompile Include="src\ImGuiUtils.cpp" />
+    <ClCompile Include="src\utilities\ImGuiUtils.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\TableGenerator.cpp" />
+    <ClCompile Include="src\utilities\LuaTableWriter.cpp" />
+    <ClCompile Include="src\utilities\TableGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.hpp" />
@@ -155,9 +156,10 @@
     <ClInclude Include="src\displays\IDisplay.hpp" />
     <ClInclude Include="src\displays\LogDisplay.hpp" />
     <ClInclude Include="src\displays\UploadDisplay.hpp" />
-    <ClInclude Include="src\ImGuiUtils.hpp" />
+    <ClInclude Include="src\utilities\ImGuiUtils.hpp" />
     <ClInclude Include="src\Settings.hpp" />
-    <ClInclude Include="src\TableGenerator.hpp" />
+    <ClInclude Include="src\utilities\LuaTableWriter.hpp" />
+    <ClInclude Include="src\utilities\TableGenerator.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImGui\ImGui.vcxproj">

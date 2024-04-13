@@ -3,6 +3,7 @@
 #include <fstream>
 #include <Logger.h>
 #include <format>
+#include "LuaTableWriter.hpp"
 
 namespace fs = std::filesystem;
 
@@ -84,12 +85,91 @@ namespace BinConverter {
 
 		outStream.close();
 		inStream.close();
+
         return true;
     }
 
-    bool TableGenerator::GenerateLuaTable()
-    {
-        return false;
-    }
+	bool TableGenerator::GenerateLuaTable(const std::string& sTableName, bool bZeroTerminate, bool bSizeVariable, bool bDecimal, bool bEndVariable)
+	{
+		fs::path inPath{ m_sInFile };
+		if (!fs::exists(inPath))
+		{
+			ERROR("Failed to Generate Array: [{}] -- Does Not Exist!", m_sInFile);
+			return false;
+		}
 
+		std::fstream inStream{ m_sInFile, std::ios::in | std::ios::binary };
+		if (!inStream.is_open())
+		{
+			ERROR("Failed to generate array: Failed to open: [{}]", m_sInFile);
+			return false;
+		}
+
+		
+		int byte;
+		unsigned int i = 0U;
+		unsigned int count = 0U;
+
+		try
+		{
+			LuaWriter luaWriter{ m_sOutFile };
+			if (!luaWriter.StartDocument())
+			{
+				inStream.close();
+				ERROR("Failed to start Lua Document!");
+				return false;
+			}
+
+			luaWriter.CommentSeparation()
+				.Comment(std::format("Start table {}", sTableName))
+				.CommentSeparation();
+
+			luaWriter.StartTable(sTableName)
+				.WriteKeyAndQuotedValue("asset_name", inPath.stem().string())
+				.WriteKeyAndQuotedValue("asset_extension", inPath.extension().string())
+				.StartTable("data");
+
+			while (!inStream.eof())
+			{
+				byte = inStream.get();
+
+				if (inStream.eof())
+					break;
+
+				// Keep rows of 20
+				if (count >= 20)
+				{
+					luaWriter.WriteWords(",");
+					count = 0;
+				}
+
+				luaWriter.WriteValue(std::format("{:#04x}", byte));
+				++count;
+				++i;
+			}
+
+			luaWriter.EndTable();
+			if (bEndVariable)
+				luaWriter.WriteKeyAndValue("data_end", i - 1ull);
+			if (bSizeVariable)
+				luaWriter.WriteKeyAndValue("data_size", i);
+
+			luaWriter.EndTable();
+
+			if (!luaWriter.EndDocument())
+			{
+				ERROR("Failed to successfully End Lua document");
+			}
+		}
+		catch (const std::exception& ex)
+		{
+			inStream.close();
+			ERROR("Failed to write [{}] at path [{}] to asset file!", inPath.stem().string(), m_sInFile);
+			return false;
+		}
+
+		inStream.close();
+
+		return true;
+	}
 }

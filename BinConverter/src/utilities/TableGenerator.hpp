@@ -10,7 +10,8 @@ namespace BinConverter {
 		bool GenerateArray(const std::string& sArrayName, bool bZeroTerminate = false, bool bSizeVariable = true, 
 			bool bDecimal = false, bool bEndVariable = false);
 
-		bool GenerateLuaTable();
+		bool GenerateLuaTable(const std::string& sTableName, bool bZeroTerminate = false, bool bSizeVariable = true,
+			bool bDecimal = false, bool bEndVariable = false);
 
 	private:
 		std::string m_sInFile, m_sOutFile;

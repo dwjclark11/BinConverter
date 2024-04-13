@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <cassert>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -27,7 +28,8 @@ constexpr WORD BRIGHT_WHITE = 15;
 
 
 #define LOG(x, ...)		LOGGER::Logger::GetInstance().Log(x, __VA_ARGS__);
-#define ERROR(x, ...)		LOGGER::Logger::GetInstance().Error(std::source_location::current(), x, __VA_ARGS__);
+#define ERROR(x, ...)	LOGGER::Logger::GetInstance().Error(std::source_location::current(), x, __VA_ARGS__);
+#define ASSERT(x)		assert(x);
 
 #define LOG_CLEAR()		LOGGER::Logger::GetInstance().ClearLogEntries();
 
