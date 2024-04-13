@@ -13,7 +13,7 @@ namespace BinConverter {
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
 		if (!ImGui::Begin("Choices Display", nullptr, flags))
 		{
-			ImGui::End();
+			ImGui::End(); 
 			return;
 		}
 		ImGui::NewLine();
