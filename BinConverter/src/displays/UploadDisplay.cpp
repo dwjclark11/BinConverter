@@ -2,6 +2,9 @@
 #include <imgui.h>
 #include <string>
 
+#include <nfd.hpp>
+#include <Logger.h>
+
 void BinConverter::UploadDisplay::Draw()
 {
 	if (!ImGui::Begin("Content Display"))
@@ -20,8 +23,30 @@ void BinConverter::UploadDisplay::Draw()
 
 	if (ImGui::Button("UPLOAD FILE"))
 	{
-		// TODO: 
+		NFD::UniquePath outPath;
+		auto result = NFD::PickFolder(outPath);
+		if (result == NFD_OKAY)
+		{
+			LOG("Success: {}", outPath.get());
+		}
+		else if (result == NFD_CANCEL)
+		{
+			LOG("User Cancelled!");
+		}
+		else
+		{
+			ERROR("Failed to open dialog: {}", NFD::GetError());
+		}
 	}
 
 	ImGui::End();
+}
+
+void BinConverter::UploadDisplay::SetUploadFile(const std::string& sUploadedFile)
+{
+	if (sUploadedFile.empty())
+		return;
+
+	m_sUploadedFile = sUploadedFile; 
+	m_bFileUploaded = true;
 }

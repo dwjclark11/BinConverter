@@ -5,6 +5,9 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <SDL_opengl.h>
 
+#define NFD_THROWS_EXCEPTIONS
+#include <nfd.hpp>
+
 // Displays 
 #include "displays/UploadDisplay.hpp"
 
@@ -44,6 +47,12 @@ namespace BinConverter {
 		{
 			std::string error = SDL_GetError();
 			ERROR("Failed to initialize SDL: " + error);
+			return false;
+		}
+
+		// Init NFD
+		if (NFD_Init() != NFD_OKAY) {
+			ERROR("Failed to initialize NFD -- NativeFileDialog!");
 			return false;
 		}
 
@@ -150,8 +159,11 @@ namespace BinConverter {
 
 				break;
 			case SDL_DROPFILE:
-				m_pImGuiEx->DropFile(std::string{ m_Event.drop.file });
+			{
+				auto pUploadDisplay = dynamic_cast<UploadDisplay*>(m_mapDisplays[DisplayType::UPLOAD].get());
+				pUploadDisplay->SetUploadFile(std::string{ m_Event.drop.file });
 				break;
+			}
 	
 			default:
 				break;
@@ -187,6 +199,7 @@ namespace BinConverter {
 
 	void BinConverter::Application::CleanUp()
 	{
-		
+		NFD_Quit();
+		SDL_Quit();
 	}
 }

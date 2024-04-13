@@ -1,9 +1,18 @@
 #pragma once
 #include "IDisplay.hpp"
+#include <string>
 
 namespace BinConverter {
-	struct UploadDisplay : public IDisplay
+	class UploadDisplay : public IDisplay
 	{
-		void Draw();
+	private:
+		std::string m_sUploadedFile{""};
+		bool m_bFileUploaded{ false };
+	public:
+		UploadDisplay() = default;
+		~UploadDisplay() = default;
+
+		void Draw() override;
+		void SetUploadFile(const std::string& sUploadedFile);
 	};
 }
