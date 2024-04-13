@@ -13,6 +13,7 @@ namespace BinConverter {
 		~UploadDisplay() = default;
 
 		void Draw() override;
+		void Update() override;
 		void SetUploadFile(const std::string& sUploadedFile);
 	};
 }

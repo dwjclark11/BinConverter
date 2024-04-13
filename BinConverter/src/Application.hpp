@@ -8,7 +8,10 @@ namespace BinConverter {
 
 	enum class DisplayType
 	{
-		UPLOAD, // TODO: Add more display types
+		UPLOAD, 
+		CHOICES,
+		LOGS,
+		// TODO: Add more display types
 	};
 
 	class Application
@@ -24,7 +27,7 @@ namespace BinConverter {
 
 		SDL_Event m_Event{};
 		bool m_bIsRunning{ true };
-		int m_WindowWidth{ 1366 }, m_WindowHeight{ 768 };
+		int m_WindowWidth{ 768 }, m_WindowHeight{ 480 };
 
 	private:
 		bool Initialize();

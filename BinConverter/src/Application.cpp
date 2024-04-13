@@ -10,6 +10,8 @@
 
 // Displays 
 #include "displays/UploadDisplay.hpp"
+#include "displays/ChoicesDisplay.hpp"
+#include "displays/LogDisplay.hpp"
 
 namespace BinConverter {
 
@@ -125,6 +127,8 @@ namespace BinConverter {
 	bool Application::InitDisplays()
 	{
 		m_mapDisplays.emplace(DisplayType::UPLOAD, std::make_unique<UploadDisplay>());
+		m_mapDisplays.emplace(DisplayType::CHOICES, std::make_unique<ChoicesDisplay>());
+		m_mapDisplays.emplace(DisplayType::LOGS, std::make_unique<LogDisplay>());
 
 		return true;
 	}
@@ -173,12 +177,15 @@ namespace BinConverter {
 
 	void BinConverter::Application::Update()
 	{
-
+		for (const auto& [eType, pDisplay] : m_mapDisplays)
+		{
+			pDisplay->Update();
+		}
 	}
 
 	void BinConverter::Application::Render()
 	{
-		glViewport(0, 0, 1366, 768);
+		glViewport(0, 0, m_WindowWidth, m_WindowHeight);
 		glClearColor(0.f, 0.f, 0.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT);
 

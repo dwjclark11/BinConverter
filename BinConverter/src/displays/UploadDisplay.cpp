@@ -1,7 +1,5 @@
 #include "UploadDisplay.hpp"
 #include <imgui.h>
-#include <string>
-
 #include <nfd.hpp>
 #include <Logger.h>
 
@@ -32,6 +30,7 @@ void BinConverter::UploadDisplay::Draw()
 		else if (result == NFD_CANCEL)
 		{
 			LOG("User Cancelled!");
+			ERROR("CANCELLED!");
 		}
 		else
 		{
@@ -40,6 +39,11 @@ void BinConverter::UploadDisplay::Draw()
 	}
 
 	ImGui::End();
+}
+
+void BinConverter::UploadDisplay::Update()
+{
+	// 
 }
 
 void BinConverter::UploadDisplay::SetUploadFile(const std::string& sUploadedFile)
