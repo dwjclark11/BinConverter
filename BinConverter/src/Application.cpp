@@ -13,6 +13,8 @@
 #include "displays/ChoicesDisplay.hpp"
 #include "displays/LogDisplay.hpp"
 
+#include "Settings.hpp"
+
 namespace BinConverter {
 
 	Application& Application::GetInstance()
@@ -117,17 +119,20 @@ namespace BinConverter {
 			return false;
 		}
 
-		if (!InitDisplays())
+		// Initialize Settings
+		m_pSettings = std::make_unique<Settings>();
+
+		if (!InitDisplays(*m_pSettings))
 		{
 			ERROR("Failed to initialize Displays!");
 			return false;
 		}
 	}
 
-	bool Application::InitDisplays()
+	bool Application::InitDisplays(Settings& settings)
 	{
-		m_mapDisplays.emplace(DisplayType::UPLOAD, std::make_unique<UploadDisplay>());
-		m_mapDisplays.emplace(DisplayType::CHOICES, std::make_unique<ChoicesDisplay>());
+		m_mapDisplays.emplace(DisplayType::UPLOAD, std::make_unique<UploadDisplay>(settings));
+		m_mapDisplays.emplace(DisplayType::CHOICES, std::make_unique<ChoicesDisplay>(settings));
 		m_mapDisplays.emplace(DisplayType::LOGS, std::make_unique<LogDisplay>());
 
 		return true;

@@ -156,6 +156,7 @@
     <ClInclude Include="src\displays\LogDisplay.hpp" />
     <ClInclude Include="src\displays\UploadDisplay.hpp" />
     <ClInclude Include="src\ImGuiUtils.hpp" />
+    <ClInclude Include="src\Settings.hpp" />
     <ClInclude Include="src\TableGenerator.hpp" />
   </ItemGroup>
   <ItemGroup>

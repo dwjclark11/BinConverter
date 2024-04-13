@@ -3,6 +3,15 @@
 #include <nfd.hpp>
 #include <Logger.h>
 
+#include "../TableGenerator.hpp"
+#include "../Settings.hpp"
+
+BinConverter::UploadDisplay::UploadDisplay(Settings& settings)
+	: m_Settings{settings}
+{
+
+}
+
 void BinConverter::UploadDisplay::Draw()
 {
 	if (!ImGui::Begin("Content Display"))
@@ -10,6 +19,9 @@ void BinConverter::UploadDisplay::Draw()
 		ImGui::End();
 		return;
 	}
+
+	ImGui::Text("In File: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), m_sUploadedFile.c_str());
+	ImGui::Text("Out File: "); ImGui::SameLine(); ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), m_sOutFile.c_str());
 
 	static std::string sUploadButton{ "UPLOAD FILE" };
 	
@@ -22,19 +34,74 @@ void BinConverter::UploadDisplay::Draw()
 	if (ImGui::Button("UPLOAD FILE"))
 	{
 		NFD::UniquePath outPath;
-		auto result = NFD::PickFolder(outPath);
+		auto result = NFD::OpenDialog(outPath);
 		if (result == NFD_OKAY)
 		{
-			LOG("Success: {}", outPath.get());
+			m_sUploadedFile = std::string{ outPath.get() };
 		}
 		else if (result == NFD_CANCEL)
 		{
-			LOG("User Cancelled!");
-			ERROR("CANCELLED!");
+			ImGui::End();
+			return;
 		}
 		else
 		{
 			ERROR("Failed to open dialog: {}", NFD::GetError());
+		}
+	}
+	static std::string sDropFile{ "or Drop File" };
+	textSize = ImGui::CalcTextSize(sDropFile.c_str());
+	ImGui::SetCursorPosX((windowSize.x - textSize.x) * 0.5f);
+	ImGui::Text(sDropFile.c_str());
+
+	if (m_sUploadedFile.empty())
+	{
+		ImGui::End();
+		return;
+	}
+
+	ImGui::SetCursorPosX((windowSize.x - textSize.x) * 0.5f);
+	if (ImGui::Button("SET OUT FILE"))
+	{
+		NFD::UniquePath outPath;
+		auto result = NFD::SaveDialog(outPath);
+		if (result == NFD_OKAY)
+		{
+			m_sOutFile = std::string{ outPath.get() };
+		}
+		else if (result == NFD_CANCEL)
+		{
+			ImGui::End();
+			return;
+		}
+		else
+		{
+			ERROR("Failed to save dialog: {}", NFD::GetError());
+		}
+	}
+
+	if (!m_sOutFile.empty() && !m_sUploadedFile.empty())
+	{
+		std::string sGenerateText{ "GENERATE TABLE" };
+		textSize = ImGui::CalcTextSize(sGenerateText.c_str());
+		ImGui::SetCursorPosX((windowSize.x - textSize.x) * 0.5f);
+
+		if (ImGui::Button(sGenerateText.c_str()))
+		{
+			TableGenerator tableGen{ m_sUploadedFile, m_sOutFile };
+
+			if (m_Settings.bCreateArray)
+			{
+				if (!tableGen.GenerateArray(m_Settings.sTableName, m_Settings.bZeroTerminated,
+					m_Settings.bTableSize, false, m_Settings.bTableEnd))
+				{
+					ERROR("Failed to Generate Array!");
+				}
+			}
+			else if (m_Settings.bCreateLuaTable)
+			{
+				// TODO: 
+			}
 		}
 	}
 

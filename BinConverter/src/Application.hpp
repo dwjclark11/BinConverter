@@ -23,6 +23,8 @@ namespace BinConverter {
 	private:
 		std::unique_ptr<WINDOWING::Window> m_pWindow{ nullptr };
 		std::unique_ptr<ImGuiUtils::ImguiExt> m_pImGuiEx{ nullptr };
+		std::unique_ptr<struct Settings> m_pSettings{ nullptr };
+
 		std::map<DisplayType, std::unique_ptr<IDisplay>> m_mapDisplays;
 
 		SDL_Event m_Event{};
@@ -31,7 +33,7 @@ namespace BinConverter {
 
 	private:
 		bool Initialize();
-		bool InitDisplays();
+		bool InitDisplays(struct Settings& settings);
 		void ProcessEvents();
 		void Update();
 		void Render();

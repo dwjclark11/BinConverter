@@ -10,8 +10,10 @@ namespace BinConverter {
 		bool m_bTableSize{ true }, m_bZeroTerminated{ false };
 		bool m_bTableEnd{ false };
 		
+		struct Settings& m_Settings;
+
 	public:
-		ChoicesDisplay() = default;
+		ChoicesDisplay(struct Settings& settings);
 		~ChoicesDisplay() = default;
 
 		void Draw() override;
