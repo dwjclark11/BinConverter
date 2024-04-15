@@ -24,6 +24,18 @@ namespace BinConverter {
             return false;
         }
 
+		if (sArrayName.empty())
+		{
+			ERROR("Failed to generate array: Array Name is empty");
+			return false;
+		}
+
+		if (std::isdigit(sArrayName[0]))
+		{
+			ERROR("Failed to generate array: Array name cannot start with a number!");
+			return false;
+		}
+
         std::fstream inStream{ m_sInFile, std::ios::in | std::ios::binary };
         if (!inStream.is_open())
         {
@@ -94,14 +106,27 @@ namespace BinConverter {
 		fs::path inPath{ m_sInFile };
 		if (!fs::exists(inPath))
 		{
-			ERROR("Failed to Generate Array: [{}] -- Does Not Exist!", m_sInFile);
+			ERROR("Failed to Generate Lua Table: [{}] -- File Does Not Exist!", m_sInFile);
 			return false;
 		}
+
+		if (sTableName.empty())
+		{
+			ERROR("Failed to generate Lua Table: Table Name is empty");
+			return false;
+		}
+
+		if (std::isdigit(sTableName[0]))
+		{
+			ERROR("Failed to generate Lua Table: Table name cannot start with a number!");
+			return false;
+		}
+
 
 		std::fstream inStream{ m_sInFile, std::ios::in | std::ios::binary };
 		if (!inStream.is_open())
 		{
-			ERROR("Failed to generate array: Failed to open: [{}]", m_sInFile);
+			ERROR("Failed to generate Lua Table: Failed to open: [{}]", m_sInFile);
 			return false;
 		}
 

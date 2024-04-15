@@ -1,6 +1,12 @@
 #include "ChoicesDisplay.hpp"
-#include <imgui.h>
 #include "../Settings.hpp"
+
+#include <imgui.h>
+#include <algorithm>
+#include <format>
+
+constexpr const char* letters = "!\n\t\r\?@#$%&\'\"[]{}+-|~`\\/ ";
+
 namespace BinConverter {
 	ChoicesDisplay::ChoicesDisplay(Settings& settings)
 		: m_Settings{settings}
@@ -48,6 +54,21 @@ namespace BinConverter {
 		if (ImGui::InputText("##Table Name", tableNamebuf, sizeof(tableNamebuf)))
 		{
 			m_Settings.sTableName = std::string{ tableNamebuf };
+			std::replace_if(m_Settings.sTableName.begin(), m_Settings.sTableName.end(), 
+				[](const char c)
+				{
+					return std::string{ letters }.find(c) != std::string::npos; 
+				}, '_'
+			);
+		}
+
+		if (!m_Settings.sTableName.empty() && std::isdigit(m_Settings.sTableName[0]))
+		{
+			ImGui::TextColored(ImVec4{ 1.f, 0, 0, 1.f },
+				std::format(
+					"Table Name [{}] is invalid.\nCannot start with a number!", 
+					m_Settings.sTableName).c_str()
+			);
 		}
 
 		ImGui::End();
