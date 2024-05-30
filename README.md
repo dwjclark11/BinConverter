@@ -5,7 +5,12 @@ binary file into a lua table or a C-Style array.
 It uses [Dear ImGui](https://github.com/ocornut/imgui) for the user interface, [NativeFileDialog-Extended](https://github.com/btzy/nativefiledialog-extended) for 
 opening the necessary file dialogs. It also uses [SDL2](https://github.com/libsdl-org/SDL) for windowing and processing events. 
 
-This is a work in progress; however, it does create the necessary tables as needed.
+## Build
+* Install dependencies ```./vcpkg install sdl2```
+* Clone the repository ```https://github.com/dwjclark11/BinConverter.git```
+* Get into the ```BinConverter``` directory and run ```cmake -S . -B build```
+* Get into the ```build``` directory and run ```cmake --build . --config Debug``` or ```--config Release```
+ * If you are using ```MSVC``` you can build from the ```.sln``` that was created in the ```build``` dir. 
 
 ![image](https://github.com/dwjclark11/BinConverter/assets/63356975/97ae1698-c3b5-4167-b9d9-0386d5198a45)
 
