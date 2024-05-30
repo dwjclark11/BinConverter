@@ -1,5 +1,5 @@
 #include "LuaTableWriter.hpp"
-#include <Logger.h>
+#include <Logger/Logger.h>
 
 constexpr char SEPARATOR = ',';
 

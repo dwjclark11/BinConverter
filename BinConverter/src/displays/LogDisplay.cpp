@@ -1,6 +1,6 @@
 #include "LogDisplay.hpp"
 #include <ranges>
-#include <Logger.h>
+#include <Logger/Logger.h>
 
 namespace BinConverter {
 

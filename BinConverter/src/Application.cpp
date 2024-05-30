@@ -1,5 +1,5 @@
 #include "Application.hpp"
-#include <Logger.h>
+#include <Logger/Logger.h>
 #include <glad/glad.h>
 #include <backends/imgui_impl_sdl2.h>
 #include <backends/imgui_impl_opengl3.h>

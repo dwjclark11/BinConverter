@@ -1,5 +1,5 @@
-#include "Window.h"
-#include <Logger.h>
+#include "window/Window.h"
+#include <Logger/Logger.h>
 
 namespace WINDOWING {
 	void Window::CreateNewWindow(int xPos, int yPos, Uint32 flags)
