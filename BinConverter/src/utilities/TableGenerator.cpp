@@ -1,7 +1,7 @@
 #include "TableGenerator.hpp"
 #include <filesystem>
 #include <fstream>
-#include <Logger.h>
+#include <Logger/Logger.h>
 #include <format>
 #include "LuaTableWriter.hpp"
 

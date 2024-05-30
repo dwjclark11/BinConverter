@@ -1,7 +1,7 @@
 #include "UploadDisplay.hpp"
 #include <imgui.h>
 #include <nfd.hpp>
-#include <Logger.h>
+#include <Logger/Logger.h>
 
 #include "../utilities/TableGenerator.hpp"
 #include "../Settings.hpp"
