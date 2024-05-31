@@ -7,8 +7,8 @@ opening the necessary file dialogs. It also uses [SDL2](https://github.com/libsd
 
 ## Build
 * Install dependencies ```./vcpkg install sdl2```
- * ```linux``` needs gtk+3.0 for nfd. Use ```sudo apt install libgtk-3-dev```
- * Linux build currently failing.
+  * ```linux``` needs gtk+3.0 for nfd. Use ```sudo apt install libgtk-3-dev```
+  * Linux build currently failing.
 * Clone the repository ```https://github.com/dwjclark11/BinConverter.git```
 * Get into the ```BinConverter``` directory and run ```cmake -S . -B build```
 * Get into the ```build``` directory and run ```cmake --build . --config Debug``` or ```--config Release```
