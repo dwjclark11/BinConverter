@@ -47,7 +47,13 @@ namespace BinConverter {
 		ImGui::NewLine();
 		char tableNamebuf[256];
 		memset(tableNamebuf, 0, sizeof(tableNamebuf));
+
+#ifdef _WIN32
 		strcpy_s(tableNamebuf, m_Settings.sTableName.c_str());
+#else 
+		strcpy(tableNamebuf, m_Settings.sTableName.c_str());
+#endif
+
 		ImGui::Text("Table Name");
 		ImGui::SameLine();
 		ImGui::SetCursorPosX(75.f);
