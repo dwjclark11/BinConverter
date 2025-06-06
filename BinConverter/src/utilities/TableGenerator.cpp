@@ -4,6 +4,7 @@
 #include <Logger/Logger.h>
 #include <format>
 #include "LuaTableWriter.hpp"
+#include "Settings.hpp"
 
 namespace fs = std::filesystem;
 
@@ -16,8 +17,7 @@ TableGenerator::TableGenerator(const std::string& sInFile, const std::string& sO
 {
 }
 
-bool TableGenerator::GenerateArray(const std::string& sArrayName, bool bZeroTerminate, bool bSizeVariable,
-								   bool bDecimal, bool bEndVariable)
+bool TableGenerator::GenerateArray(const Settings& settings)
 {
 	fs::path inPath{m_sInFile};
 	if (!fs::exists(inPath))
@@ -26,13 +26,13 @@ bool TableGenerator::GenerateArray(const std::string& sArrayName, bool bZeroTerm
 		return false;
 	}
 
-	if (sArrayName.empty())
+	if (settings.sTableName.empty())
 	{
 		ERROR("Failed to generate array: Array Name is empty");
 		return false;
 	}
 
-	if (std::isdigit(sArrayName[ 0 ]))
+	if (std::isdigit(settings.sTableName[ 0 ]))
 	{
 		ERROR("Failed to generate array: Array name cannot start with a number!");
 		return false;
@@ -51,8 +51,8 @@ bool TableGenerator::GenerateArray(const std::string& sArrayName, bool bZeroTerm
 	size_t total{0ull};
 	size_t rowCount{0ull};
 
-	outStream << std::format("// start {}\n", sArrayName);
-	outStream << std::format("unsigned char {}[] = ", sArrayName);
+	outStream << std::format("// start {}\n", settings.sTableName);
+	outStream << std::format("unsigned char {}[] = ", settings.sTableName);
 	outStream << "{\n";
 
 	while (!inStream.eof())
@@ -64,12 +64,11 @@ bool TableGenerator::GenerateArray(const std::string& sArrayName, bool bZeroTerm
 
 		if (total != 0ull)
 		{
-			outStream << ", ";
+			outStream << (settings.bTightlyPack ? "," : ", ");
 			++rowCount;
 		}
 
-		// Keep rows of 30
-		if (rowCount >= 30)
+		if (rowCount >= settings.numEntriesPerRow)
 		{
 			outStream << "\n";
 			rowCount = 0;
@@ -79,24 +78,25 @@ bool TableGenerator::GenerateArray(const std::string& sArrayName, bool bZeroTerm
 		++total;
 	}
 
-	if (bZeroTerminate)
+	if (settings.bZeroTerminated)
 	{
 		// If not the first, print a comma
 		if (total != 0U)
 			outStream << ", ";
-		outStream << bDecimal ? "0" : "0x00";
+		outStream << settings.bDecimal ? "0" : "0x00";
 		++total;
 	}
 
 	outStream << "};\n";
 
-	if (total > 0U && bEndVariable)
-		outStream << std::format("unsigned char* {}_end = {} + {};\n", sArrayName, sArrayName, total - 1ull);
+	if (total > 0U && settings.bTableEnd)
+		outStream << std::format(
+			"unsigned char* {}_end = {} + {};\n", settings.sTableName, settings.sTableName, total - 1ull);
 
-	if (bSizeVariable)
-		outStream << std::format("unsigned int {}_size = {};\n", sArrayName, total);
+	if (settings.bTableSize)
+		outStream << std::format("unsigned int {}_size = {};\n", settings.sTableName, total);
 
-	outStream << std::format("// end {}\n", sArrayName);
+	outStream << std::format("// end {}\n", settings.sTableName);
 
 	outStream.close();
 	inStream.close();
@@ -104,8 +104,7 @@ bool TableGenerator::GenerateArray(const std::string& sArrayName, bool bZeroTerm
 	return true;
 }
 
-bool TableGenerator::GenerateLuaTable(const std::string& sTableName, bool bZeroTerminate, bool bSizeVariable,
-									  bool bDecimal, bool bEndVariable)
+bool TableGenerator::GenerateLuaTable(const Settings& settings)
 {
 	fs::path inPath{m_sInFile};
 	if (!fs::exists(inPath))
@@ -114,13 +113,13 @@ bool TableGenerator::GenerateLuaTable(const std::string& sTableName, bool bZeroT
 		return false;
 	}
 
-	if (sTableName.empty())
+	if (settings.sTableName.empty())
 	{
 		ERROR("Failed to generate Lua Table: Table Name is empty");
 		return false;
 	}
 
-	if (std::isdigit(sTableName[ 0 ]))
+	if (std::isdigit(settings.sTableName[ 0 ]))
 	{
 		ERROR("Failed to generate Lua Table: Table name cannot start with a number!");
 		return false;
@@ -147,9 +146,9 @@ bool TableGenerator::GenerateLuaTable(const std::string& sTableName, bool bZeroT
 			return false;
 		}
 
-		luaWriter.CommentSeparation().Comment(std::format("Start table {}", sTableName)).CommentSeparation();
+		luaWriter.CommentSeparation().Comment(std::format("Start table {}", settings.sTableName)).CommentSeparation();
 
-		luaWriter.StartTable(sTableName)
+		luaWriter.StartTable(settings.sTableName)
 			.WriteKeyAndQuotedValue("asset_name", inPath.stem().string())
 			.WriteKeyAndQuotedValue("asset_extension", inPath.extension().string())
 			.StartTable("data");
@@ -161,10 +160,9 @@ bool TableGenerator::GenerateLuaTable(const std::string& sTableName, bool bZeroT
 			if (inStream.eof())
 				break;
 
-			// Keep rows of 20
-			if (count >= 20)
+			if (count >= settings.numEntriesPerRow)
 			{
-				luaWriter.WriteWords(",");
+				settings.bTightlyPack ? luaWriter.WriteWords(",") : luaWriter.WriteWords(", ");
 				count = 0;
 			}
 
@@ -174,9 +172,9 @@ bool TableGenerator::GenerateLuaTable(const std::string& sTableName, bool bZeroT
 		}
 
 		luaWriter.EndTable();
-		if (bEndVariable)
+		if (settings.bTableEnd)
 			luaWriter.WriteKeyAndValue("data_end", i - 1ull);
-		if (bSizeVariable)
+		if (settings.bTableSize)
 			luaWriter.WriteKeyAndValue("data_size", i);
 
 		luaWriter.EndTable();

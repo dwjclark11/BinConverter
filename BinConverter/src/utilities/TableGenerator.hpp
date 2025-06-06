@@ -3,16 +3,15 @@
 
 namespace BinConverter
 {
+struct Settings;
+
 class TableGenerator
 {
   public:
 	TableGenerator(const std::string& sInFile, const std::string& sOutFile);
 
-	bool GenerateArray(const std::string& sArrayName, bool bZeroTerminate = false, bool bSizeVariable = true,
-					   bool bDecimal = false, bool bEndVariable = false);
-
-	bool GenerateLuaTable(const std::string& sTableName, bool bZeroTerminate = false, bool bSizeVariable = true,
-						  bool bDecimal = false, bool bEndVariable = false);
+	bool GenerateArray(const Settings& settings);
+	bool GenerateLuaTable(const Settings& settings);
 
   private:
 	std::string m_sInFile, m_sOutFile;

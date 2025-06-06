@@ -1,5 +1,5 @@
 #include "ChoicesDisplay.hpp"
-#include "../Settings.hpp"
+#include "utilities/Settings.hpp"
 
 #include <imgui.h>
 #include <algorithm>
@@ -28,14 +28,25 @@ void ChoicesDisplay::Draw()
 	if (ImGui::Checkbox("Create Lua Table", &m_Settings.bCreateLuaTable))
 	{
 		if (m_Settings.bCreateLuaTable)
+		{
 			m_Settings.bCreateArray = false;
+		}
 	}
 
 	if (ImGui::Checkbox("Create C-Style Array", &m_Settings.bCreateArray))
 	{
 		if (m_Settings.bCreateArray)
+		{
 			m_Settings.bCreateLuaTable = false;
+		}
 	}
+
+	ImGui::Checkbox("Tighly Pack", &m_Settings.bTightlyPack);
+	if (ImGui::InputInt("Entries Per Row", &m_Settings.numEntriesPerRow))
+	{
+		m_Settings.numEntriesPerRow = std::clamp(m_Settings.numEntriesPerRow, 20, 100);
+	}
+
 	ImGui::NewLine();
 	ImGui::SeparatorText("Extra Variables");
 	ImGui::Checkbox("Table Size", &m_Settings.bTableSize);

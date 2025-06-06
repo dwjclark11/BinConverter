@@ -13,7 +13,7 @@
 #include "displays/ChoicesDisplay.hpp"
 #include "displays/LogDisplay.hpp"
 
-#include "Settings.hpp"
+#include "utilities/Settings.hpp"
 
 namespace BinConverter
 {

@@ -3,8 +3,8 @@
 #include <nfd.hpp>
 #include <Logger/Logger.h>
 
-#include "../utilities/TableGenerator.hpp"
-#include "../Settings.hpp"
+#include "utilities/TableGenerator.hpp"
+#include "utilities/Settings.hpp"
 
 BinConverter::UploadDisplay::UploadDisplay(Settings& settings)
 	: m_Settings{settings}
@@ -96,11 +96,7 @@ void BinConverter::UploadDisplay::Draw()
 
 			if (m_Settings.bCreateArray)
 			{
-				if (!tableGen.GenerateArray(m_Settings.sTableName,
-											m_Settings.bZeroTerminated,
-											m_Settings.bTableSize,
-											false,
-											m_Settings.bTableEnd))
+				if (!tableGen.GenerateArray(m_Settings))
 				{
 					ERROR("Failed to Generate C-Style Array [{}] from [{}] to [{}]!",
 						  m_Settings.sTableName,
@@ -117,11 +113,7 @@ void BinConverter::UploadDisplay::Draw()
 			}
 			else if (m_Settings.bCreateLuaTable)
 			{
-				if (!tableGen.GenerateLuaTable(m_Settings.sTableName,
-											   m_Settings.bZeroTerminated,
-											   m_Settings.bTableSize,
-											   false,
-											   m_Settings.bTableEnd))
+				if (!tableGen.GenerateLuaTable(m_Settings))
 				{
 					ERROR("Failed to Generate Lua Table [{}] from [{}] to [{}]!",
 						  m_Settings.sTableName,
