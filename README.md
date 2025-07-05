@@ -1,22 +1,78 @@
-# BinConverter
-Simple GUI application that will take in a binary files such as a PNG, JPG, WAV, MP3, etc, and convert the 
-binary file into a lua table or a C-Style array. 
+# 🧮 BinConverter
 
-It uses [Dear ImGui](https://github.com/ocornut/imgui) for the user interface, [NativeFileDialog-Extended](https://github.com/btzy/nativefiledialog-extended) for 
-opening the necessary file dialogs. It also uses [SDL2](https://github.com/libsdl-org/SDL) for windowing and processing events. 
+**BinConverter** is a simple **GUI application** that converts binary files (such as `.png`, `.jpg`, `.wav`, `.mp3`, etc.) into a **Lua table** or **C-style byte array**. This tool is useful for embedding binary assets directly into source code.
 
-## Build
-* Install dependencies ```./vcpkg install sdl2```
-  * ```linux``` needs gtk+3.0 for nfd. Use ```sudo apt install libgtk-3-dev```
-  * Linux build currently failing.
-* Clone the repository ```https://github.com/dwjclark11/BinConverter.git```
-* Get into the ```BinConverter``` directory and run ```cmake -S . -B build```
-* Get into the ```build``` directory and run ```cmake --build . --config Debug``` or ```--config Release```
- * If you are using ```MSVC``` you can build from the ```.sln``` that was created in the ```build``` dir. 
+---
 
+## ✨ Features
+
+- Converts binary files into:
+  - **Lua tables**
+  - **C-style arrays**
+- Drag-and-drop or file dialog support
+- Clean UI with **Dear ImGui**
+- Cross-platform GUI (Windows/Linux*)
+- Written in **Modern C++20**
+
+---
+
+## 🧰 Dependencies
+
+- [Dear ImGui](https://github.com/ocornut/imgui)
+- [NativeFileDialog-Extended (nfd)](https://github.com/btzy/nativefiledialog-extended)
+- [SDL2](https://github.com/libsdl-org/SDL)
+
+> 📦 Package management with **vcpkg** recommended
+
+---
+
+## 🛠️ Build Instructions
+
+### ✅ Windows
+
+```bash
+git clone https://github.com/dwjclark11/BinConverter.git
+cd BinConverter
+./vcpkg install sdl2
+cmake -S . -B build
+cmake --build build --config Release
+```
+You can also open the build/BinConverter.sln file in Visual Studio.
+
+## ⚠️ Linux
+| ❗ Linux build is currently failing
+To attempt a build on Linux, install the **GTK** dependency for **NativeFileDialog**:
+```bash
+sudo apt install libgtk-3-dev
+```
+Then run:
+```bash
+git clone https://github.com/dwjclark11/BinConverter.git
+cd BinConverter
+cmake -S . -B build
+cmake --build build --config Release
+```
+--- 
+
+## 🖼️ UI Preview
 ![image](https://github.com/dwjclark11/BinConverter/assets/63356975/97ae1698-c3b5-4167-b9d9-0386d5198a45)
 
-### Desired Functionality
-* ~~When user is inputting the name of the table, currently there can be numbers and spaces. This needs to be checked and either a warning displayed or automatically changed to something else. Like turn spaces into ```_```.~~ Added
-* Add filters for specific file types. For when we are uploading (or Dropping) files, we want to ensure that it is a supported type. Currently it accepts all files --> NOT DESIRED.
-* If the out file already exists, we need to add a pop up that asks the user if they want to overwrite the file or append to the bottom.
+---
+
+## 📋 Desired Functionality / TODOs
+* **Validate table name input:**
+  * Table names can no longer include spaces — they are replaced with underscores (_).
+  * Numbers are also filtered out as needed.
+* **File type filtering:**
+  * When uploading or dropping files, currently all file types are accepted. This should be restricted to supported formats only.
+* **Overwrite warning for output files:**
+  * If the output file already exists, a confirmation popup should appear asking the user whether to:
+    * Overwrite the existing file
+    * Append to the bottom of the file
+
+## 📺 YouTube Series
+Part of the **JADE-ite Games and Programming** educational content:
+* [YouTube Channel – JADE-ite Games](https://www.youtube.com/@JADE-iteGames)
+
+## 📄 License
+This project is licensed under the MIT License. See [LICENSE](https://github.com/dwjclark11/BinConverter/blob/master/LICENSE) for details.
